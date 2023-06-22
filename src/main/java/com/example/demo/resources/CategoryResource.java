@@ -14,7 +14,7 @@ import com.example.demo.sevices.CategoryService;
 
 //Identificando que é um controlador rest 
 @RestController
-@RequestMapping(value = "/category")
+@RequestMapping(value = "/categories")
 public class CategoryResource {
 	
 	//anotação identificando que é uma dependência
