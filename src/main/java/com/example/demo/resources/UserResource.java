@@ -1,13 +1,17 @@
 package com.example.demo.resources;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.demo.entities.User;
 import com.example.demo.sevices.UserService;
@@ -16,23 +20,30 @@ import com.example.demo.sevices.UserService;
 @RestController
 @RequestMapping(value = "/users")
 public class UserResource {
-	
-	//anotação identificando que é uma dependência
+
+	// anotação identificando que é uma dependência
 	@Autowired
 	private UserService service;
-	
+
 	@GetMapping
-	public ResponseEntity<List<User>>findAll(){
-		List<User>list = service.findAll();
+	public ResponseEntity<List<User>> findAll() {
+		List<User> list = service.findAll();
 		return ResponseEntity.ok().body(list);
-		
+
 	}
-	//anotação para dizer que será uma requisição do tipo "GET"
+
+	// anotação para dizer que será uma requisição do tipo "GET"
 	@GetMapping(value = "/{id}")
-	//anotação para que o framework aceite o parametro para encontrar o id
-	public ResponseEntity<User>findById(@PathVariable Long id){
+	// anotação para que o framework aceite o parametro para encontrar o id
+	public ResponseEntity<User> findById(@PathVariable Long id) {
 		User obj = service.findById(id);
 		return ResponseEntity.ok().body(obj);
 	}
-	
+
+	@PostMapping
+	public ResponseEntity<User>insert(@RequestBody User obj){
+		obj = service.insert(obj);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+		return ResponseEntity.created(uri).body(obj);
+	}
 }
